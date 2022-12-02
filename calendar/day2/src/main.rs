@@ -1,11 +1,30 @@
 use std::fs::File;
 use std::io::{BufReader, BufRead, Error};
-use std::str::from_utf8;
+
+
+const ROCK_SCORE: i32 = 1;
+const PAPER_SCORE: i32 = 2;
+const SCISSORS_SCORE: i32 = 3;
+const LOOSE_SCORE: i32 = 0;
+const DRAW_SCORE: i32 = 3;
+const VICTORY_SCORE: i32 = 6;
 
 fn main() -> Result<(), Error> {
-    let path = "input.txt";
+    let filename = "input.txt";
 
-    let input = File::open(path)?;
+    let input = read_input(&filename);
+
+    let part1 = part1(&input);
+    println!("Part 1: {}", part1);
+
+    let part2 = part2(&input);
+    println!("Part 2: {}", part2);
+
+    Ok(())
+}
+
+fn read_input(filename: &str) -> Vec<(char, char)> {
+    let input = File::open(filename).unwrap();
     let buffered = BufReader::new(input);
 
     let mut input = Vec::new();
@@ -16,65 +35,62 @@ fn main() -> Result<(), Error> {
         let player = char::from(line_bytes[2]);
         input.push((opponent, player));
     }
+    return input;
+}
 
-    let mut part1 = 0;
-    let mut part2 = 0;
-
+fn part1(input: &Vec<(char, char)>) -> i32 {
+    let mut score = 0;
     for game in input {
-        part1 += calc_game_score(game.0, game.1);
-        part2 += calc_game_score_part_2(game.0, game.1);
+        score += calc_game_score(game.0, game.1);
     }
+    return score;
+}
 
-    println!("Part 1: {}", part1);
-
-    println!("Part 2: {}", part2);
-
-    Ok(())
+fn part2(input: &Vec<(char, char)>) -> i32 {
+    let mut score = 0;
+    for game in input {
+        score += calc_game_score_part_2(game.0, game.1);
+    }
+    return score;
 }
 
 fn calc_game_score(opponent: char, player: char) -> i32 {
     let mut score = 0;
-    let rock_score = 1;
-    let paper_score = 2;
-    let scissors_score = 3;
-    let loose_score = 0;
-    let draw_score = 3;
-    let victory_score = 6;
     if opponent == 'A' {
         if player == 'X' {
-            score += rock_score;
-            score += draw_score;
+            score += ROCK_SCORE;
+            score += DRAW_SCORE;
         } else if player == 'Y' {
-            score += paper_score;
-            score += victory_score;
+            score += PAPER_SCORE;
+            score += VICTORY_SCORE;
         } else if player == 'Z' {
-            score += scissors_score;
-            score += loose_score;
+            score += SCISSORS_SCORE;
+            score += LOOSE_SCORE;
         }
     }
     else if opponent == 'B' {
         if player == 'X' {
-            score += rock_score;
-            score += loose_score;
+            score += ROCK_SCORE;
+            score += LOOSE_SCORE;
         } else if player == 'Y' {
-            score += paper_score;
-            score += draw_score;
+            score += PAPER_SCORE;
+            score += DRAW_SCORE;
         } else if player == 'Z' {
-            score += scissors_score;
-            score += victory_score;
+            score += SCISSORS_SCORE;
+            score += VICTORY_SCORE;
         }
 
     }
     else if opponent == 'C' {
         if player == 'X' {
-            score += rock_score;
-            score += victory_score;
+            score += ROCK_SCORE;
+            score += VICTORY_SCORE;
         } else if player == 'Y' {
-            score += paper_score;
-            score += loose_score;
+            score += PAPER_SCORE;
+            score += LOOSE_SCORE;
         } else if player == 'Z' {
-            score += scissors_score;
-            score += draw_score;
+            score += SCISSORS_SCORE;
+            score += DRAW_SCORE;
         }
     }
     return score;
@@ -82,48 +98,84 @@ fn calc_game_score(opponent: char, player: char) -> i32 {
 
 fn calc_game_score_part_2(opponent: char, outcome: char) -> i32 {
     let mut score = 0;
-    let rock_score = 1;
-    let paper_score = 2;
-    let scissors_score = 3;
-    let loose_score = 0;
-    let draw_score = 3;
-    let victory_score = 6;
     if opponent == 'A' {
         if outcome == 'X' {
-            score += scissors_score;
-            score += loose_score;
+            score += SCISSORS_SCORE;
+            score += LOOSE_SCORE;
         } else if outcome == 'Y' {
-            score += rock_score;
-            score += draw_score;
+            score += ROCK_SCORE;
+            score += DRAW_SCORE;
         } else if outcome == 'Z' {
-            score += paper_score;
-            score += victory_score;
+            score += PAPER_SCORE;
+            score += VICTORY_SCORE;
         }
     }
     else if opponent == 'B' {
         if outcome == 'X' {
-            score += rock_score;
-            score += loose_score;
+            score += ROCK_SCORE;
+            score += LOOSE_SCORE;
         } else if outcome == 'Y' {
-            score += paper_score;
-            score += draw_score;
+            score += PAPER_SCORE;
+            score += DRAW_SCORE;
         } else if outcome == 'Z' {
-            score += scissors_score;
-            score += victory_score;
+            score += SCISSORS_SCORE;
+            score += VICTORY_SCORE;
         }
 
     }
     else if opponent == 'C' {
         if outcome == 'X' {
-            score += paper_score;
-            score += loose_score;
+            score += PAPER_SCORE;
+            score += LOOSE_SCORE;
         } else if outcome == 'Y' {
-            score += scissors_score;
-            score += draw_score;
+            score += SCISSORS_SCORE;
+            score += DRAW_SCORE;
         } else if outcome == 'Z' {
-            score += rock_score;
-            score += victory_score;
+            score += ROCK_SCORE;
+            score += VICTORY_SCORE;
         }
     }
     return score;
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{part1, part2, read_input};
+
+    #[test]
+    fn read_input_example() {
+        let filename = "input_example.txt";
+        let actual = read_input(&filename);
+        assert_eq!(actual.len(), 3);
+        assert_eq!(actual.get(0).unwrap().0, 'A');
+        assert_eq!(actual.get(0).unwrap().1, 'Y');
+        assert_eq!(actual.get(1).unwrap().0, 'B');
+        assert_eq!(actual.get(1).unwrap().1, 'X');
+        assert_eq!(actual.get(2).unwrap().0, 'C');
+        assert_eq!(actual.get(2).unwrap().1, 'Z');
+    }
+
+    #[test]
+    fn part1_input_example() {
+        let mut input = Vec::new();
+        input.push(('A','Y'));
+        input.push(('B','X'));
+        input.push(('C','Z'));
+
+        let actual = part1(&input);
+
+        assert_eq!(actual, 15);
+    }
+
+    #[test]
+    fn part2_input_example() {
+        let mut input = Vec::new();
+        input.push(('A','Y'));
+        input.push(('B','X'));
+        input.push(('C','Z'));
+
+        let actual = part2(&input);
+
+        assert_eq!(actual, 12);
+    }
 }
