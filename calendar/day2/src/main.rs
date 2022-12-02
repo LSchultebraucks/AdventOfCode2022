@@ -8,6 +8,12 @@ const SCISSORS_SCORE: i32 = 3;
 const LOOSE_SCORE: i32 = 0;
 const DRAW_SCORE: i32 = 3;
 const VICTORY_SCORE: i32 = 6;
+const A: char = 'A';
+const B: char = 'B';
+const C: char = 'C';
+const X: char = 'X';
+const Y: char = 'Y';
+const Z: char = 'Z';
 
 fn main() -> Result<(), Error> {
     let filename = "input.txt";
@@ -55,86 +61,52 @@ fn part2(input: &Vec<(char, char)>) -> i32 {
 }
 
 fn calc_game_score(opponent: char, player: char) -> i32 {
-    let mut score = 0;
-    if opponent == 'A' {
-        if player == 'X' {
-            score += ROCK_SCORE;
-            score += DRAW_SCORE;
-        } else if player == 'Y' {
-            score += PAPER_SCORE;
-            score += VICTORY_SCORE;
-        } else if player == 'Z' {
-            score += SCISSORS_SCORE;
-            score += LOOSE_SCORE;
+    let score = match opponent {
+        A => match player {
+            X => ROCK_SCORE + DRAW_SCORE,
+            Y => PAPER_SCORE + VICTORY_SCORE,
+            Z => SCISSORS_SCORE + LOOSE_SCORE,
+            _ => panic!(""),
+        },
+        B => match player {
+            X => ROCK_SCORE + LOOSE_SCORE,
+            Y => PAPER_SCORE + DRAW_SCORE,
+            Z => SCISSORS_SCORE + VICTORY_SCORE,
+            _ => panic!(""),
         }
-    }
-    else if opponent == 'B' {
-        if player == 'X' {
-            score += ROCK_SCORE;
-            score += LOOSE_SCORE;
-        } else if player == 'Y' {
-            score += PAPER_SCORE;
-            score += DRAW_SCORE;
-        } else if player == 'Z' {
-            score += SCISSORS_SCORE;
-            score += VICTORY_SCORE;
-        }
-
-    }
-    else if opponent == 'C' {
-        if player == 'X' {
-            score += ROCK_SCORE;
-            score += VICTORY_SCORE;
-        } else if player == 'Y' {
-            score += PAPER_SCORE;
-            score += LOOSE_SCORE;
-        } else if player == 'Z' {
-            score += SCISSORS_SCORE;
-            score += DRAW_SCORE;
-        }
-    }
+        C => match player {
+            X => ROCK_SCORE + VICTORY_SCORE,
+            Y => PAPER_SCORE + LOOSE_SCORE,
+            Z => SCISSORS_SCORE + DRAW_SCORE,
+            _ => panic!(""),
+        },
+        _ => panic!(),
+    };
     return score;
 }
 
 fn calc_game_score_part_2(opponent: char, outcome: char) -> i32 {
-    let mut score = 0;
-    if opponent == 'A' {
-        if outcome == 'X' {
-            score += SCISSORS_SCORE;
-            score += LOOSE_SCORE;
-        } else if outcome == 'Y' {
-            score += ROCK_SCORE;
-            score += DRAW_SCORE;
-        } else if outcome == 'Z' {
-            score += PAPER_SCORE;
-            score += VICTORY_SCORE;
+    let score = match opponent {
+        A => match outcome {
+            X => SCISSORS_SCORE + LOOSE_SCORE,
+            Y => ROCK_SCORE + DRAW_SCORE,
+            Z => PAPER_SCORE + VICTORY_SCORE,
+            _ => panic!(""),
+        },
+        B => match outcome {
+            X => ROCK_SCORE + LOOSE_SCORE,
+            Y => PAPER_SCORE + DRAW_SCORE,
+            Z => SCISSORS_SCORE + VICTORY_SCORE,
+            _ => panic!(""),
         }
-    }
-    else if opponent == 'B' {
-        if outcome == 'X' {
-            score += ROCK_SCORE;
-            score += LOOSE_SCORE;
-        } else if outcome == 'Y' {
-            score += PAPER_SCORE;
-            score += DRAW_SCORE;
-        } else if outcome == 'Z' {
-            score += SCISSORS_SCORE;
-            score += VICTORY_SCORE;
-        }
-
-    }
-    else if opponent == 'C' {
-        if outcome == 'X' {
-            score += PAPER_SCORE;
-            score += LOOSE_SCORE;
-        } else if outcome == 'Y' {
-            score += SCISSORS_SCORE;
-            score += DRAW_SCORE;
-        } else if outcome == 'Z' {
-            score += ROCK_SCORE;
-            score += VICTORY_SCORE;
-        }
-    }
+        C => match outcome {
+            X => PAPER_SCORE + LOOSE_SCORE,
+            Y => SCISSORS_SCORE + DRAW_SCORE,
+            Z => ROCK_SCORE + VICTORY_SCORE,
+            _ => panic!(""),
+        },
+        _ => panic!(),
+    };
     return score;
 }
 
@@ -168,6 +140,13 @@ mod tests {
     }
 
     #[test]
+    fn part1_input() {
+        let input = read_input("input.txt");
+        let actual = part1(&input);
+        assert_eq!(actual, 11666);
+    }
+
+    #[test]
     fn part2_input_example() {
         let mut input = Vec::new();
         input.push(('A','Y'));
@@ -177,5 +156,12 @@ mod tests {
         let actual = part2(&input);
 
         assert_eq!(actual, 12);
+    }
+
+    #[test]
+    fn part2_input() {
+        let input = read_input("input.txt");
+        let actual = part2(&input);
+        assert_eq!(actual, 12767);
     }
 }
