@@ -77,10 +77,8 @@ fn priority_of(c: char) -> i32 {
         (c as i32) - 96
     } else {
         (c as i32) - 38
-    } as i32
+    }
 }
-
-
 
 #[cfg(test)]
 mod tests {
@@ -104,8 +102,8 @@ mod tests {
 
     #[test]
     fn part1_input() {
-        let input_example = read_input("input.txt");
-        let actual = part1(&input_example);
+        let input = read_input("input.txt");
+        let actual = part1(&input);
         assert_eq!(7917, actual);
     }
 
@@ -149,6 +147,13 @@ mod tests {
         let input_example = read_input("input_example.txt");
         let actual = part2(&input_example);
         assert_eq!(70, actual);
+    }
+
+    #[test]
+    fn part2_input() {
+        let input = read_input("input.txt");
+        let actual = part2(&input);
+        assert_eq!(2585, actual);
     }
 
     #[test]
